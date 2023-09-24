@@ -1,5 +1,7 @@
 //Place Holder
 
-export const hello = (req, res) => {
-    res.send('hello');
-}
+const hello = (req, res) => {
+  res.render("index");
+};
+
+module.exports = { hello };
