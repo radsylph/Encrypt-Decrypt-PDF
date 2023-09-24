@@ -1,0 +1,41 @@
+* {
+  background-color: #252525;
+  color: #ffffff;
+  margin: 0%;
+  padding: 0%;
+  font-weight: 700;
+}
+
+#container {
+  justify-content: center;
+  align-content: center;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+}
+form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Sym {
+  margin: 10px;
+  padding: 10px;
+  background-color: rgb(145, 47, 47);
+  border: 5px solid rgb(255, 47, 47);
+  font-family: Nunito;
+}
+
+.Asym {
+  margin: 10px;
+  padding: 10px;
+  background-color: rgb(47, 47, 145);
+  border: 5px solid rgb(47, 47, 255);
+  font-family: Nunito;
+}
+
+input[type="file"] {
+  display: none;
+}
