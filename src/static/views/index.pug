@@ -1,0 +1,14 @@
+doctype HTML
+html(lang="eng")
+    head
+        link(rel="stylesheet", href="index.css")
+        link(rel="shortcut icon", href="BananaSackboy.ico", type="image/x-icon")
+        title PUNK
+    body
+        div(id="container")
+            form#cryptA(action="/", method="get")
+                label.sym(for="PDFA") Symmetric Encrypt
+                input#PDFA(type="file", accept=".pdf")
+            form#cryptA(action="/", method="get")
+                label.asym(for="PDFB") Asymmetric Encrypt
+                input#PDFB(type="file", accept=".pdf")

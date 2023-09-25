@@ -8,7 +8,7 @@ const app = express();
 */
 // Settings
 app.set("views", path.join(__dirname, "static/views"));
-app.set("view engine", "ejs");
+app.set("view engine", "pug");
 app.use(express.static(path.join(__dirname, "static/public")));
 
 // Middlewares
