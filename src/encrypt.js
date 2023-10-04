@@ -63,60 +63,48 @@ const decypher = (inputFilePath, outputFilePath, algorithm, key, iv) => {
 
 // asymmetricEncrypt('C:\\Users\\Usuario\\Desktop\\Encrypt-Decrypt-PDF\\src\\andres.pdf', publicKey, "./encrypted_file.enc");
 
-const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-  modulusLength: 2048, // Adjust key size as needed for security
-  publicKeyEncoding: {
-    type: "spki",
-    format: "pem",
-  },
-  privateKeyEncoding: {
-    type: "pkcs8",
-    format: "pem",
-  },
-});
+// // Function to encrypt a file using hybrid encryption
+// const hybridEncrypt = (filePath, publicKey, outputEncryptedPath) => {
+//   // Generate a random symmetric encryption key
+//   const symmetricKey = crypto.randomBytes(32); // Adjust key size as needed
 
-// Function to encrypt a file using hybrid encryption
-const hybridEncrypt = (filePath, publicKey, outputEncryptedPath) => {
-  // Generate a random symmetric encryption key
-  const symmetricKey = crypto.randomBytes(32); // Adjust key size as needed
+//   // Encrypt the file using the symmetric key (e.g., AES encryption)
+//   const fileData = fs.readFileSync(filePath);
+//   const cipher = crypto.createCipher("aes-256-cbc", symmetricKey);
+//   const encryptedData = Buffer.concat([
+//     cipher.update(fileData),
+//     cipher.final(),
+//   ]);
 
-  // Encrypt the file using the symmetric key (e.g., AES encryption)
-  const fileData = fs.readFileSync(filePath);
-  const cipher = crypto.createCipher("aes-256-cbc", symmetricKey);
-  const encryptedData = Buffer.concat([
-    cipher.update(fileData),
-    cipher.final(),
-  ]);
+//   // Encrypt the symmetric key using the recipient's public key
+//   const encryptedSymmetricKey = crypto.publicEncrypt(publicKey, symmetricKey);
 
-  // Encrypt the symmetric key using the recipient's public key
-  const encryptedSymmetricKey = crypto.publicEncrypt(publicKey, symmetricKey);
+//   // Combine the encrypted symmetric key and the encrypted file data
+//   const encryptedResult = Buffer.concat([encryptedSymmetricKey, encryptedData]);
 
-  // Combine the encrypted symmetric key and the encrypted file data
-  const encryptedResult = Buffer.concat([encryptedSymmetricKey, encryptedData]);
+//   fs.writeFileSync(outputEncryptedPath, encryptedResult);
+// };
 
-  fs.writeFileSync(outputEncryptedPath, encryptedResult);
-};
+// // Function to decrypt a file using hybrid decryption
+// const hybridDecrypt = (encryptedFilePath, privateKey, outputDecryptedPath) => {
+//   const encryptedData = fs.readFileSync(encryptedFilePath);
 
-// Function to decrypt a file using hybrid decryption
-const hybridDecrypt = (encryptedFilePath, privateKey, outputDecryptedPath) => {
-  const encryptedData = fs.readFileSync(encryptedFilePath);
+//   // Extract the encrypted symmetric key and the encrypted file data
+//   const encryptedSymmetricKey = encryptedData.slice(0, 256);
+//   const encryptedFileData = encryptedData.slice(256);
 
-  // Extract the encrypted symmetric key and the encrypted file data
-  const encryptedSymmetricKey = encryptedData.slice(0, 256);
-  const encryptedFileData = encryptedData.slice(256);
+//   // Decrypt the symmetric key using the private key
+//   const symmetricKey = crypto.privateDecrypt(privateKey, encryptedSymmetricKey);
 
-  // Decrypt the symmetric key using the private key
-  const symmetricKey = crypto.privateDecrypt(privateKey, encryptedSymmetricKey);
+//   // Decrypt the file data using the symmetric key (e.g., AES decryption)
+//   const decipher = crypto.createDecipher("aes-256-cbc", symmetricKey);
+//   const decryptedData = Buffer.concat([
+//     decipher.update(encryptedFileData),
+//     decipher.final(),
+//   ]);
 
-  // Decrypt the file data using the symmetric key (e.g., AES decryption)
-  const decipher = crypto.createDecipher("aes-256-cbc", symmetricKey);
-  const decryptedData = Buffer.concat([
-    decipher.update(encryptedFileData),
-    decipher.final(),
-  ]);
-
-  fs.writeFileSync(outputDecryptedPath, decryptedData);
-};
+//   fs.writeFileSync(outputDecryptedPath, decryptedData);
+// };
 
 // hybridEncrypt(
 //   "C:\\Users\\Usuario\\Desktop\\Encrypt-Decrypt-PDF\\src\\andres.pdf",
@@ -138,5 +126,45 @@ const hybridDecrypt = (encryptedFilePath, privateKey, outputDecryptedPath) => {
 //   iv
 // );
 
+// const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+//   modulusLength: 2048, // Adjust key size as needed for security
+//   publicKeyEncoding: {
+//     type: "spki",
+//     format: "pem",
+//   },
+//   privateKeyEncoding: {
+//     type: "pkcs8",
+//     format: "pem",
+//   },
+// });
 
+const publicKey = fs.readFileSync("./public_key.pem", "utf8");
+const privateKey = fs.readFileSync("./private_key.pem", "utf8");
+function asymmetricEncrypt(filePath, publicKey, outputEncryptedPath) {
+  const fileData = fs.readFileSync(filePath);
+
+  const encryptedData = crypto.publicEncrypt(publicKey, fileData);
+
+  fs.writeFileSync(outputEncryptedPath, encryptedData);
+}
+
+function asymmetricDecrypt(encryptedFilePath, privateKey, outputDecryptedPath) {
+  const encryptedData = fs.readFileSync(encryptedFilePath);
+
+  const decryptedData = crypto.privateDecrypt(privateKey, encryptedData);
+
+  fs.writeFileSync(outputDecryptedPath, decryptedData);
+}
+
+// asymmetricEncrypt(
+//   "C:\\Users\\Usuario\\Desktop\\Encrypt-Decrypt-PDF\\src\\test.txt",
+//   publicKey,
+//   "C:\\Users\\Usuario\\Desktop\\Encrypt-Decrypt-PDF\\src\\test.enc"
+// );
+
+asymmetricDecrypt(
+  "C:\\Users\\Usuario\\Desktop\\Encrypt-Decrypt-PDF\\src\\test.enc",
+  privateKey,
+  "C:\\Users\\Usuario\\Desktop\\Encrypt-Decrypt-PDF\\src\\newtest.txt"
+);
 module.exports = { encrypt, decypher };
